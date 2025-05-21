@@ -17,6 +17,7 @@ contract Calculator is AbstractCalculator {
     function calculate(uint256 a, uint256 b, string memory operation) public {
         uint256 result;
 
+        // keccak256(abi.encodePacked(operation)) == keccak256(abi.encodePacked("add")) // also possible
         if (keccak256(bytes(operation)) == keccak256(bytes("add"))) {
             result = add(a, b);
         } else if (

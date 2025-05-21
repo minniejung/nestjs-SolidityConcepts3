@@ -14,6 +14,7 @@ async function main() {
 
   // Todo: deploy script를 구현하여 주세요.
   const Calculator = await ethers.getContractFactory("Calculator", {
+    // libraries: { "contracts/MathLibrary:MathLibrary": contractLib.target },
     libraries: { MathLibrary: contractLib.target },
   });
   const contract = await Calculator.deploy();

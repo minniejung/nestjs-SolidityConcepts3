@@ -15,7 +15,7 @@ export class CalculatorController {
     - 계산한 히스토리 가져오기(getHistoryItem)
   */
 
-  @Post("calculate")
+  @Post()
   async calculate(@Body() calculateDto: CalculateDto) {
     return await this.calculatorService.calculate(
       calculateDto.a,
@@ -24,17 +24,17 @@ export class CalculatorController {
     );
   }
 
-  @Get("lastResult/:address")
+  @Get("/:address/history/last")
   async getLastResult(@Param("address") address: string) {
     return await this.calculatorService.getLastResult(address);
   }
 
-  @Get("historyLength/:address")
+  @Get("/:address/history/length")
   async getHistoryLength(@Param("address") address: string) {
     return await this.calculatorService.getHistoryLength(address);
   }
 
-  @Get("historyItem/:address")
+  @Get("/:address/history")
   async getHistoryItem(@Param("address") address: string) {
     return await this.calculatorService.getHistoryItem(address);
   }
