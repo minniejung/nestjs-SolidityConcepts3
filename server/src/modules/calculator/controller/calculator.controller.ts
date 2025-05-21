@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Query, Param } from '@nestjs/common';
-import { CalculatorService } from '../service/calculator.service';
-import { CalculateDto } from '../dto/calculate.dto';
+import { Controller, Get, Post, Body, Query, Param } from "@nestjs/common";
+import { CalculatorService } from "../service/calculator.service";
+import { CalculateDto } from "../dto/calculate.dto";
 
-@Controller('calculator')
+@Controller("calculator")
 export class CalculatorController {
   constructor(private readonly calculatorService: CalculatorService) {}
 
@@ -14,4 +14,28 @@ export class CalculatorController {
     - 계산한 횟수 가져오기(getHistoryLength)
     - 계산한 히스토리 가져오기(getHistoryItem)
   */
+
+  @Post("calculate")
+  async calculate(@Body() calculateDto: CalculateDto) {
+    return await this.calculatorService.calculate(
+      calculateDto.a,
+      calculateDto.b,
+      calculateDto.operation
+    );
+  }
+
+  @Get("lastResult/:address")
+  async getLastResult(@Param("address") address: string) {
+    return await this.calculatorService.getLastResult(address);
+  }
+
+  @Get("historyLength/:address")
+  async getHistoryLength(@Param("address") address: string) {
+    return await this.calculatorService.getHistoryLength(address);
+  }
+
+  @Get("historyItem/:address")
+  async getHistoryItem(@Param("address") address: string) {
+    return await this.calculatorService.getHistoryItem(address);
+  }
 }
