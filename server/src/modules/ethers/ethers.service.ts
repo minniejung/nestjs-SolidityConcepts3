@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import {
   ethers,
   zeroPadValue,
@@ -9,8 +9,8 @@ import {
   parseEther,
   formatEther,
   LogDescription,
-} from 'ethers';
-import { abi, address } from '../../../abis/Calculator.json';
+} from "ethers";
+import { abi, address } from "../../../abis/Calculator.json";
 
 @Injectable()
 export class EthersService {
@@ -19,8 +19,8 @@ export class EthersService {
   private contract: ethers.Contract;
 
   constructor(private configService: ConfigService) {
-    const rpcUrl = this.configService.get<string>('RPC_URL');
-    const privateKey = this.configService.get<string>('PRIVATE_KEY');
+    const rpcUrl = this.configService.get<string>("RPC_URL");
+    const privateKey = this.configService.get<string>("PRIVATE_KEY");
 
     this.provider = new ethers.JsonRpcProvider(rpcUrl);
     this.signer = new ethers.Wallet(privateKey!, this.provider);
@@ -56,25 +56,39 @@ export class EthersService {
   async calculate(a: number, b: number, operation: string) {
     // Todo: calculate 함수를 실행하여 Calculate 이벤트의 값을 받아 리턴합니다.
     // ⚠️ 리턴은 Number 단위로 리턴합니다.
+    const tx = await this.contract.calculate(a, b, operation);
+    const receipt = await tx.wait();
 
-    return;
+    for (const log of receipt.logs) {
+      try {
+        const parsedLog = this.contract.interface.parseLog(log);
+        // console.log("parsedLog", parsedLog);
+        // console.log("parsedLog?.name)", parsedLog?.name);
+        // console.log("parsedLog?.args", parsedLog?.args);
+        if (parsedLog?.name === "Calculate") {
+          return Number(parsedLog.args.result);
+        }
+      } catch (_) {
+        continue;
+      }
+    }
   }
 
   async getLastResult(address: string) {
     // Todo: getLastResult의 값을 리턴합니다.
 
-    return;
+    return await this.contract.getLastResult(address);
   }
 
   async getHistoryLength(address: string) {
     // Todo: getHistoryLength의 값을 리턴합니다.
 
-    return;
+    return await this.contract.getHistoryLength(address);
   }
 
   async getHistoryItem(address: string) {
     // Todo: getHistoryItem의 값을 리턴합니다.
 
-    return;
+    return await this.contract.getHistoryItem(address);
   }
 }
